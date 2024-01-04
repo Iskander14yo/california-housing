@@ -1,0 +1,45 @@
+mlflow:
+  tracking_uri: 'http://localhost:5000' # здесь можно поставить необходимый адрес до mlflow
+
+storage:
+  remote: "myremote"
+  paths:
+    data:
+      folder: "data"
+      train_path: "train_data.csv"   # Путь к тренировочным данным
+      test_path: "test_data.csv"     # Путь к тестовым данным
+      pred_path: "predicts.csv"      # Путь для сохранения предикта
+    models:
+      folder: "models/saved_states"  # Путь для сохранения состояний артефактов
+
+pipeline: # секция по пайплайну обучения данных
+  columns:
+    numeric:
+      - "longitude"
+      - "latitude"
+      - "housing_median_age"
+      - "total_rooms"
+      - "total_bedrooms"
+      - "population"
+      - "households"
+      - "median_income"
+    categorical:
+      - "ocean_proximity"
+    target: &target_col
+        "median_house_value"
+  preprocessing:
+    scaler: {}
+    imputer:
+      strategy: "median"
+    ohe:
+      drop: "first"
+      sparse_output: false
+      handle_unknown: "ignore"
+    clipper:
+      clip_value: 500000
+      col_name: *target_col
+  model:
+    learning_rate: 0.01
+    max_depth: 5
+    n_estimators: 150
+    random_state: 42
