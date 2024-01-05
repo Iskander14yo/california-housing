@@ -2,6 +2,10 @@
 .idea
 .DS_Store
 
+# project-specific
+outputs
+tmp.py
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
