@@ -1,6 +1,16 @@
 ### Intro
 Этот репозиторий содержит решение задачи [California Housing](https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwjyou-y27-DAxUZ8rsIHem3A5UQFnoECBgQAQ&url=https%3A%2F%2Fwww.kaggle.com%2Fdatasets%2Fcamnugent%2Fcalifornia-housing-prices&usg=AOvVaw3Heommyln5MorynwSU5WOM&opi=89978449).
 
+**Basic usage**:
+* Запустить трейн:
+```commandline
+python3 commands.py --cfg_path=configs/default.yaml train
+```
+* Запустить инференс:
+```commandline
+python3 commands.py --cfg_path=configs/default.yaml inference
+```
+
 **Структура проекта**:
 ```text
 │ data/                 # папка с данными (трейн для обучения и семпл для теста/отладки инференса)

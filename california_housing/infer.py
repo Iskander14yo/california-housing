@@ -7,8 +7,8 @@ import hydra
 import pandas as pd
 from omegaconf import DictConfig
 
-from utils.dvc import DVCManager
-from utils.sio import safe_skops_load
+from .utils.dvc import DVCManager
+from .utils.sio import safe_skops_load
 
 logger = getLogger()
 dvc_manager = DVCManager()
@@ -20,11 +20,11 @@ def infer(cfg: DictConfig):
     dvc_manager.pull(cfg.storage.paths.models.folder)
     preprocessor = safe_skops_load(
         os.path.join(cfg.storage.paths.models.folder, "CH_preprocessor.skops"),
-        add_types=cfg.storage.paths.models.folder.replace("/", "."),
+        add_types=["california_housing"],
     )
     model = safe_skops_load(
         os.path.join(cfg.storage.paths.models.folder, "CH_model.skops"),
-        add_types=cfg.storage.paths.models.folder.replace("/", "."),
+        add_types=["california_housing"],
     )
     preprocessor.is_train = False
 

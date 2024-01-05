@@ -14,10 +14,10 @@ from omegaconf import DictConfig
 from sklearn.model_selection import learning_curve, train_test_split
 from skops import io as sio
 
-from models.classes.model import Model
-from models.classes.preprocessing import Preprocessor
-from utils.dvc import DVCManager
-from utils.git import get_head_sha
+from .models.model import Model
+from .models.preprocessing import Preprocessor
+from .utils.dvc import DVCManager
+from .utils.git import get_head_sha
 
 logger = getLogger()
 
