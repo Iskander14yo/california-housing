@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "mlops-hw"
+name = "california_housing"
 version = "0.1.0"
 description = "hse mlops project"
 authors = ["iskanderf <iskanderf.git@gmail.com>"]
