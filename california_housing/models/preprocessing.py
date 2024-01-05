@@ -15,10 +15,7 @@ class Preprocessor:
     """
 
     def __init__(self, config: DictConfig):
-        self.num_cols = config["columns"]["numeric"]
-        self.cat_cols = config["columns"]["categorical"]
         self.target_col = config["columns"]["target"]
-        self.is_train = True
 
         self.train_pipeline = Pipeline(
             [
@@ -39,8 +36,8 @@ class Preprocessor:
         )
         col_transforms = ColumnTransformer(
             [
-                ("num", num_pipeline, list(self.num_cols)),
-                ("cat", cat_pipeline, list(self.cat_cols)),
+                ("num", num_pipeline, list(config["columns"]["numeric"])),
+                ("cat", cat_pipeline, list(config["columns"]["categorical"])),
             ]
         )
         self.infer_pipeline = Pipeline(
@@ -49,18 +46,15 @@ class Preprocessor:
             ]
         )
 
-    def process(self, df: pd.DataFrame) -> tuple[np.array, np.array]:
-        if self.is_train:
-            df = self._preprocess_train(df)
-
+    def process_train(self, df: pd.DataFrame) -> tuple[np.array, np.array]:
+        df = self.train_pipeline.fit_transform(df)
         X, y = df.drop(self.target_col, axis=1), df[self.target_col].values
-
         X = self.infer_pipeline.fit_transform(X)
         return X, y
 
-    def _preprocess_train(self, df: pd.DataFrame) -> pd.DataFrame:
-        df = self.train_pipeline.fit_transform(df)
-        return df
+    def process_infer(self, df: pd.DataFrame) -> tuple[np.array, np.array]:
+        X = self.infer_pipeline.transform(df)
+        return X
 
 
 class ClippingFilter(BaseEstimator, TransformerMixin):

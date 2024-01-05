@@ -40,5 +40,5 @@ pipeline: # секция по пайплайну обучения данных
   model:
     learning_rate: 0.01
     max_depth: 5
-    n_estimators: 10
+    n_estimators: 150
     random_state: 42

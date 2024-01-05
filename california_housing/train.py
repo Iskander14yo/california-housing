@@ -1,4 +1,5 @@
 import datetime
+import logging
 import os.path
 from logging import getLogger
 from pathlib import Path
@@ -20,14 +21,16 @@ from .utils.dvc import DVCManager
 from .utils.git import get_head_sha
 
 logger = getLogger()
+logging.basicConfig(level=logging.INFO)
 
 RUN_TIME = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 RUN_COMMIT = get_head_sha()
-dvc_manager = DVCManager()
 
 
 @hydra.main(config_path="configs", config_name="default", version_base="1.2")
 def train(cfg: DictConfig):
+    dvc_manager = DVCManager()
+
     logger.info("Downloading train data..")
     train_data_path = (
         Path(cfg.storage.paths.data.folder) / cfg.storage.paths.data.train_path
@@ -48,7 +51,7 @@ def train(cfg: DictConfig):
         logger.info("Start preprocessing..")
         train_df = pd.read_csv(train_data_path, index_col=0)
         preprocessor = Preprocessor(cfg.pipeline)
-        X, y = preprocessor.process(train_df)
+        X, y = preprocessor.process_train(train_df)
         X_train, X_val, y_train, y_val = train_test_split(
             X,
             y,
@@ -135,10 +138,12 @@ def train(cfg: DictConfig):
     os.makedirs(cfg.storage.paths.models.folder, exist_ok=True)
     preproc_path = Path(cfg.storage.paths.models.folder) / "CH_preprocessor.skops"
     model_path = Path(cfg.storage.paths.models.folder) / "CH_model.skops"
-    sio.dump(preprocessor.infer_pipeline, preproc_path)
+    sio.dump(preprocessor, preproc_path)
     sio.dump(model, model_path)
     dvc_manager.add(cfg.storage.paths.models.folder)
-    logger.info("Experiment successfully run! Models are saved.")
+    logger.info(
+        f"Experiment successfully run! Models are saved to {cfg.storage.paths.models.folder}."
+    )
 
 
 if __name__ == "__main__":

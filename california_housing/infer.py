@@ -1,4 +1,4 @@
-import os
+import logging
 import time
 from logging import getLogger
 from pathlib import Path
@@ -11,22 +11,23 @@ from .utils.dvc import DVCManager
 from .utils.sio import safe_skops_load
 
 logger = getLogger()
-dvc_manager = DVCManager()
+logging.basicConfig(level=logging.INFO)
 
 
 @hydra.main(config_path="configs", config_name="default", version_base="1.2")
 def infer(cfg: DictConfig):
+    dvc_manager = DVCManager()
+
     logger.info("Downloading pipeline..")
     dvc_manager.pull(cfg.storage.paths.models.folder)
     preprocessor = safe_skops_load(
-        os.path.join(cfg.storage.paths.models.folder, "CH_preprocessor.skops"),
+        Path(cfg.storage.paths.models.folder) / "CH_preprocessor.skops",
         add_types=["california_housing"],
     )
     model = safe_skops_load(
-        os.path.join(cfg.storage.paths.models.folder, "CH_model.skops"),
+        Path(cfg.storage.paths.models.folder) / "CH_model.skops",
         add_types=["california_housing"],
     )
-    preprocessor.is_train = False
 
     logger.info("Downloading inference data..")
     infer_path = Path(cfg.storage.paths.data.folder) / cfg.storage.paths.data.test_path
@@ -37,12 +38,12 @@ def infer(cfg: DictConfig):
     test_df = pd.read_csv(infer_path, index_col=0)
 
     logger.info("Making predictions..")
-    test_df_proc = preprocessor.transform(test_df)
+    test_df_proc = preprocessor.process_infer(test_df)
     y_pred = model.predict(test_df_proc)
     df_pred = pd.DataFrame(y_pred)
     df_pred.to_csv(pred_path)
 
-    logger.info("Inference successfully made! Predictions are saved.")
+    logger.info(f"Inference successfully made! Predictions are saved to {pred_path}.")
 
 
 if __name__ == "__main__":

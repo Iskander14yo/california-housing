@@ -1,10 +1,11 @@
+from pathlib import Path
 from typing import Any
 
 from skops import io as sio
 from skops.io.exceptions import UntrustedTypesFoundException
 
 
-def safe_skops_load(artifact_path: str, add_types: list[str]) -> Any:
+def safe_skops_load(artifact_path: str | Path, add_types: list[str]) -> Any:
     """
     Позволяет безопасно загрузить сериализованные через skops артефакты (модели, процессинги и тд).
     :param artifact_path: путь до артефакта.
