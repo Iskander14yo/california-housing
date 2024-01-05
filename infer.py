@@ -1,5 +1,5 @@
-import datetime
 import os
+import time
 from logging import getLogger
 from pathlib import Path
 
@@ -31,10 +31,8 @@ def infer(cfg: DictConfig):
     logger.info("Downloading inference data..")
     infer_path = Path(cfg.storage.paths.data.folder) / cfg.storage.paths.data.test_path
     pred_path = (
-        Path(cfg.storage.paths.data.folder)
-        / cfg.storage.paths.data.pred_path
-        / datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    )
+        Path(cfg.storage.paths.data.folder) / ("CH_predicts_" + str(int(time.time())))
+    ).with_suffix(".csv")
     dvc_manager.pull(infer_path)
     test_df = pd.read_csv(infer_path, index_col=0)
 
@@ -44,8 +42,6 @@ def infer(cfg: DictConfig):
     df_pred = pd.DataFrame(y_pred)
     df_pred.to_csv(pred_path)
 
-    logger.info("Saving predictions..")
-    dvc_manager.add(pred_path)
     logger.info("Inference successfully made! Predictions are saved.")
 
 

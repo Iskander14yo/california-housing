@@ -8,7 +8,6 @@ storage:
       folder: "data"
       train_path: "train_data.csv"   # Путь к тренировочным данным
       test_path: "test_data.csv"     # Путь к тестовым данным
-      pred_path: "predicts.csv"      # Путь для сохранения предикта
     models:
       folder: "models/saved_states"  # Путь для сохранения состояний артефактов
 

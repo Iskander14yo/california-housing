@@ -1,5 +1,6 @@
 import subprocess
 from functools import partial
+from pathlib import Path
 
 
 class DVCManager:
@@ -7,10 +8,10 @@ class DVCManager:
         self.cmd = "dvc {} {}"
         self.run = partial(subprocess.run, shell=True, check=True)
 
-    def add(self, path: str):
+    def add(self, path: str | Path):
         cmd = self.cmd.format("add", path)
         self.run(cmd)
 
-    def pull(self, path: str):
+    def pull(self, path: str | Path):
         cmd = self.cmd.format("pull", path)
         self.run(cmd)
