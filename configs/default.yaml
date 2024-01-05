@@ -1,5 +1,5 @@
 mlflow:
-  tracking_uri: 'http://localhost:5000' # здесь можно поставить необходимый адрес до mlflow
+  tracking_uri: 'http://128.0.1.1:8080' # здесь можно поставить необходимый адрес до mlflow
 
 storage:
   remote: "myremote"
